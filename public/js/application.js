@@ -5,16 +5,31 @@ function initMap() {
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
-    center: center
-  });
-
-  var marker = new google.maps.Marker({
-    position: center,
-    map: map,
-    title: "Parc'Ours",
+    center: center,
     disableDefaultUI: true
   });
 
-  map.data.loadGeoJson('data/random-troyes.geojson')
+  map.data.loadGeoJson('/data/random-troyes.geojson')
+
+  var geoMarker = new google.maps.Marker({
+    map: map,
+    icon: '/icons/my_location.png',
+  });
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      geoMarker.setPosition(pos);
+      map.setCenter(pos);
+    }, function() {
+      console.log('Geolocation refused')
+    });
+  } else {
+    console.log('No browser support');
+  }
 }
 
